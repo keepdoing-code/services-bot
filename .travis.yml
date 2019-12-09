@@ -1,0 +1,17 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+addons:
+  ssh_known_hosts: usefulcity.ru
+
+script:
+  - sudo apt-get install sshpass
+  - sshpass -p $SECURE scp -r $TRAVIS_BUILD_DIR/standalone/bot.jar sa@$SERVER_ADDR:/home/sa/deploy
+  - sshpass -p $SECURE ssh -o StrictHostKeyChecking=no sa@$SERVER_ADDR killall java
+  - sshpass -p $SECURE ssh sa@$SERVER_ADDR 'cd ./deploy && screen -dm java -jar bot.jar'
+
+deploy:
+  provider: script
+  script: mvn package
