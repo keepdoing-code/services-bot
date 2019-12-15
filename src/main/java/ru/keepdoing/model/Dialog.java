@@ -7,11 +7,12 @@ import java.util.Map;
 
 public class Dialog {
     private static Map<Long, Dialog> dialogs = new HashMap<>();
-    private IState state;
     private long chatId;
+    private State state;
 
     private Dialog(long chatId) {
         this.chatId = chatId;
+        this.state = new State(State.UserState.NEW);
     }
 
     public static Dialog createDialog(long chatId) {
@@ -25,12 +26,8 @@ public class Dialog {
         return chatId;
     }
 
-    public IState getState() {
+    public State getState() {
         return this.state;
-    }
-
-    public void setState(IState state) {
-        this.state = state;
     }
 
     public static boolean isExists(long chatId) {

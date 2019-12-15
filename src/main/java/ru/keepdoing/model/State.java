@@ -1,4 +1,25 @@
 package ru.keepdoing.model;
 
-public class State implements IState {
+public class State{
+    private UserState state;
+
+    public State(UserState state) {
+        this.state = state;
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
+    }
+
+    public enum UserState{
+        NEW,
+        REGISTRATION,
+        FREE,
+        BUSY,
+        BLOCKED,
+    }
 }

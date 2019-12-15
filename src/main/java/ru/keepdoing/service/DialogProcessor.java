@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.keepdoing.model.Dialog;
+import ru.keepdoing.workflow.SimpleWorkflow;
 
 @Component
 public class DialogProcessor {
@@ -17,16 +18,13 @@ public class DialogProcessor {
         String messageText = update.getMessage().getText();
         LOGGER.info("Message received");
 
-        if (!Dialog.isExists(chatId) || "/start".equals(messageText)) {
-            LOGGER.info("New user. Dialog created.");
-            Dialog.createDialog(chatId);
-            MessageSender.sendMessage(chatId, "Hello\nchat id = " + chatId + " \nuser - " + update.getMessage().getChat().getUserName());
-            return;
+        if (!Dialog.isExists(chatId) || ("/start".equals(messageText) && !Dialog.isExists(chatId))) {
+            processNewDialog(chatId);
+        } else {
+            processMessage(chatId, messageText);
         }
 
-        MessageSender.sendMessage(chatId, "Echo: " + messageText);
     }
-
 
     public void processCallback(Update update) {
         String callbackData = update.getCallbackQuery().getData();
@@ -44,16 +42,26 @@ public class DialogProcessor {
         MessageSender.sendMessage(chatId, msgId, editMessageText, inlineKeyboardMarkup);
     }
 
+    private void processNewDialog(long chatId) {
+        LOGGER.info("New user. Dialog created.");
+        Dialog dialog = Dialog.createDialog(chatId);
+        SimpleWorkflow.processStep(dialog, "");
+    }
 
-    public boolean processCallbackQuery(String callbackData) {
+    private void processMessage(long chatId, String message) {
+        SimpleWorkflow.processStep(Dialog.getDialog(chatId), message);
+    }
+
+    private boolean processCallbackQuery(String callbackData) {
         return true;
     }
 
-    public EditMessageText getEditedMessage() {
+
+    private EditMessageText getEditedMessage() {
         return new EditMessageText();
     }
 
-    public InlineKeyboardMarkup getEditedKeyboard() {
+    private InlineKeyboardMarkup getEditedKeyboard() {
         return new InlineKeyboardMarkup();
     }
 }
