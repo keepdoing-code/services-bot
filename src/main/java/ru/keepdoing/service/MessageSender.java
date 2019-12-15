@@ -53,4 +53,5 @@ public class MessageSender {
             LOGGER.error("Send message error - {}", e.getMessage());
         }
     }
+
 }

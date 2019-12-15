@@ -13,6 +13,10 @@ import ru.keepdoing.workflow.SimpleWorkflow;
 public class DialogProcessor {
     private static Logger LOGGER = LoggerFactory.getLogger(DialogProcessor.class);
 
+    //TODO need to change different workflows on relevant actions
+    //TODO for example - when calling settings - change to settings workflow
+    //TODO mark condition for change workflows
+
     public void processUpdate(Update update) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
