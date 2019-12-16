@@ -46,9 +46,9 @@ public class BotController {
         @Override
         public void onUpdateReceived(Update update) {
             MessageSender.setSender(this);
-            LOGGER.info("Message received");
+            LOGGER.info("Update received.");
             if (update.hasCallbackQuery()) {
-                processor.processCallback(update);
+                processor.processCallbackUpdate(update);
             } else if (update.hasMessage() && update.getMessage().hasText()) {
                 processor.processUpdate(update);
             }

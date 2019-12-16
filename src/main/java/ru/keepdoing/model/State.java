@@ -1,6 +1,6 @@
 package ru.keepdoing.model;
 
-public class State{
+public class State {
     private UserState state;
     private String location;
 
@@ -24,7 +24,7 @@ public class State{
         this.state = state;
     }
 
-    public enum UserState{
+    public enum UserState {
         NEW,
         REGISTRATION,
         FREE,

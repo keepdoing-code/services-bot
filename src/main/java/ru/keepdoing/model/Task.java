@@ -12,7 +12,7 @@ public class Task {
         this.full = full;
     }
 
-    public void changeState(TaskState newState){
+    public void changeState(TaskState newState) {
         taskState = newState;
     }
 
@@ -21,7 +21,7 @@ public class Task {
     }
 
     public void setExecutorChatId(long executorChatId) {
-        if(this.executorChatId == 0){
+        if (this.executorChatId == 0) {
             this.executorChatId = executorChatId;
         }
     }

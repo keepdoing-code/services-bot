@@ -25,6 +25,7 @@ public class MessageSender {
                 .setMessageId((int) messageId);
         try {
             sender.execute(editText);
+            LOGGER.info("Send message: {}", editText.getText());
         } catch (TelegramApiException e) {
             LOGGER.error("Send edited message error - {}", e.getMessage());
         }
@@ -37,6 +38,7 @@ public class MessageSender {
                 .setReplyMarkup(inlineKeyboard);
         try {
             sender.execute(sendMessage);
+            LOGGER.info("Send message: {}", message);
         } catch (TelegramApiException e) {
             LOGGER.error("Send msg with Inline keyboard error - {}", e.getMessage());
         }
@@ -49,6 +51,7 @@ public class MessageSender {
                 .setText(message);
         try {
             sender.execute(sendMessage);
+            LOGGER.info("Send message: {}", message);
         } catch (TelegramApiException e) {
             LOGGER.error("Send message error - {}", e.getMessage());
         }

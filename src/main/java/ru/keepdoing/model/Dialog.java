@@ -15,9 +15,11 @@ public class Dialog {
         this.state = new State(State.UserState.NEW);
     }
 
-    public static Dialog createDialog(long chatId) {
+    public static Dialog getDialog(long chatId) {
         if (!dialogs.containsKey(chatId)) {
-            return dialogs.put(chatId, new Dialog(chatId));
+            Dialog dialog = new Dialog(chatId);
+            dialogs.put(chatId, dialog);
+            return dialog;
         }
         return dialogs.get(chatId);
     }
@@ -32,10 +34,6 @@ public class Dialog {
 
     public static boolean isExists(long chatId) {
         return dialogs.containsKey(chatId);
-    }
-
-    public static Dialog getDialog(long chatId) {
-        return dialogs.get(chatId);
     }
 
     public static List<Long> getChats() {
