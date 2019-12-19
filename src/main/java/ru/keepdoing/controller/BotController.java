@@ -24,34 +24,33 @@ import java.net.PasswordAuthentication;
 public class BotController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(BotController.class);
-    private String PROXY_HOST;
-    private int PROXY_PORT;
-    private String PROXY_USER;
-    private String PROXY_PASSWORD;
 
-    private void loadProxyParams(Environment env) {
-        PROXY_HOST = env.getProperty("PROXY_HOST");
-        PROXY_PORT = Integer.parseInt(env.getProperty("PROXY_PORT"));
-        PROXY_USER = env.getProperty("PROXY_USER");
-        PROXY_PASSWORD = env.getProperty("PROXY_PASSWORD");
+    private DefaultBotOptions loadProxyParams(Environment env) {
+        String PROXY_HOST = env.getProperty("PROXY_HOST");
+        int PROXY_PORT = Integer.parseInt(env.getProperty("PROXY_PORT"));
+        String PROXY_USER = env.getProperty("PROXY_USER");
+        String PROXY_PASSWORD = env.getProperty("PROXY_PASSWORD");
+
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(PROXY_USER, PROXY_PASSWORD.toCharArray());
+            }
+        });
+        DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
+        botOptions.setProxyHost(PROXY_HOST);
+        botOptions.setProxyPort(PROXY_PORT);
+        botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
         LOGGER.info("Proxy params loaded: {}:{}@{}:{}", PROXY_USER, PROXY_PASSWORD, PROXY_HOST, PROXY_PORT);
+        return botOptions;
     }
 
     public BotController(DialogProcessor dialogProcessor, Environment env) {
-        loadProxyParams(env);
         try {
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(PROXY_USER, PROXY_PASSWORD.toCharArray());
-                }
-            });
             ApiContextInitializer.init();
             TelegramBotsApi botsApi = new TelegramBotsApi();
-            DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
-            botOptions.setProxyHost(PROXY_HOST);
-            botOptions.setProxyPort(PROXY_PORT);
-            botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
+            DefaultBotOptions botOptions = loadProxyParams(env);
+
             LOGGER.info("Bot started.");
             botsApi.registerBot(new BotProcessor(env, dialogProcessor, botOptions));
         } catch (TelegramApiException e) {
